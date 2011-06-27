@@ -1,9 +1,9 @@
 <?php
-/** 
+/**
  * $Id$
  * @package OG_Forum
  */
- 
+
 /**
 * Implementation of hook_install().
 */
@@ -38,16 +38,30 @@ function og_forum_schema() {
         'not null' => TRUE,
         'default' => '0'
       ),
-    ),   
+    ),
     'primary key' => array('tid','nid')
   );
-  
+
   db_query("UPDATE {system} SET weight = %d WHERE name = '%s'", 2, 'og_forum');
   $vid = variable_get('forum_nav_vocabulary', '');
   db_query("UPDATE {vocabulary} SET weight = %d WHERE vid = %d", -10, $vid);
-    
+
+  // apply defaults to achieve coherent behavior of OG Forum
+  if (module_exists('og_access')) {
+  	// make posts visible only inside the group, and not based on the decision of the user posting it
+  	variable_set('og_visibility', '0');
+  	// make private group's post settings to default to private (by default this is set to 'public', makes no sense)
+  	variable_set('og_private_groups', '2');
+  }
+
+  // disable showing the audience checkboxes of letting the user choose whether to make the post public or not
+  variable_set('og_audience_checkboxes', 0);
+
+  // set the forum topics content type to be an organic group post
+  variable_set('og_content_type_usage_forum', 'group_post_standard');
+
   return $schema;
-} 
+}
 
 /**
  * Implementation of hook_uninstall().

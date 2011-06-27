@@ -7,3 +7,4 @@ package = Organic groups
 dependencies[] = forum
 dependencies[] = og 
 core = 6.x
+version = "6.x-3.0"
