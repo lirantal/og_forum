@@ -115,7 +115,8 @@ function og_forum_menu() {
     'title' => 'Forums',
     'page callback' => 'forum_page',   
     'page arguments' => array(4),
-    'access arguments' => array('access content'),
+    'access callback' => 'og_forum_access_forum_page',
+    'access arguments' => array(4),
     'type' => MENU_LOCAL_TASK,
     'file' => 'forum.pages.inc',
     'file path' => drupal_get_path('module', 'forum')
@@ -293,6 +294,13 @@ function og_forum_db_rewrite_sql($query, $primary_table = 'n', $primary_field = 
 	    }
       // Rewrite the forum access
       return og_forum_get_sql();
+    }
+    // also check if forums are being accessed via the taxonomy method and apply restrictions
+    elseif (arg(0) == 'taxonomy' && arg(1) == 'term') {
+               return og_forum_get_sql();
+    }
+    elseif (arg(0) == 'node' && arg(2) == 'og' && arg(3) == 'forum') {
+       return og_forum_get_sql();
     }
   }
 }
